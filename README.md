@@ -3,57 +3,55 @@ EActiveRecordAx
 
 Author:  Cristian Salazar H.  <christiansalazarh@gmail.com>
 
+Repo:  [https://github.com/christiansalazar/yiiattributex](https://github.com/christiansalazar/yiiattributex "https://github.com/christiansalazar/yiiattributex")
+
 **Allows a CActiveRecord based class to use extended attributes stored in a blob.**
 
-In regular CActiveRecord based instances you have:
+Using this specialized class you can deal with extra attributes
+not declared in the table scheme, instead, stored in a blob, as follows:
 
-```
-// Color.php, defined as: class Color extends CActiveRecord { ... }
-$red = new Color;  
-$red->name = 'red';  
-$red->value='#f00'; 
-$red->insert(); // inserts a new record
-```
+~~~
+[php]
 
-Now, using this specialized class you can deal with extra attributes
-not declared in the table structure, instead, stored in a blob, as follows:
-
-```
 // Color.php, defined as: class Color extends EActiveRecordEx { ... }
 $red = new Color;
 $red->name = 'red';
 $red->value = '#f00';
-
-	// extended attributes, will be stored in a single blob
- 	$red->rgb_notation = 'rgb(255,0,0)';
- 	$red->label = 'This is a red color';
-
+// extended attributes, will be stored in a single blob
+$red->rgb_notation = 'rgb(255,0,0)';
+$red->label = 'This is a red color';
 $red->insert(); // inserts a new record, the two extra fields are stored in
-				// one single database column named: ax_data (see also seetings)
-```
+		// one single database column named: ax_data (see also seetings)
+~~~
 
-In this case the extra attributes: 'rgb_notation' and 'label' does not exists in
-the table schema, this two extra attributes can be used as any other attribute,
-the difference is the storage: will be persisted in the same blob field.
+In this example the extra attributes: **'rgb_notation' and 'label' does not exists in the table schema**, this both attributes are treated as regular model attributes with no difference as others persisted in table columns.
 
-You are required to create a new attribute (LONGBLOB) in your table
-scheme and pass it via settings, by default this field is called: 'ax_data'.
+In order to setup this extension **you're required to create a new table column in your schema (typically a BLOB column)**, give it a name (by default is named: 'ax_data') and declare it via settings in your config file (see also later).
 
+## The Storage Column and Model Attributes
 
-Dealing with extra attributes
------------------------------
+As an example, suppose you have this two extra attributes declared in your config file ('rgb_notation' and 'label'), also, a new column (the storage colum) was created in your table schema (name it 'ax_data'), so, future calls to $model->attributes will return an array containing all your regular table columns and class attributes, plus this two extra attributes also excluding the storage attribute (ax_data).
+
+##Dealing with extra attributes
 
 There is no difference at modeling level with the extra declared attributes,
 you can use them in any CDataProvider based widget (CGridView, CListColumn,etc)
 also, the regular usage.
 
-	$model->first_name = "Christian";   // first_name does not belong to the
-										// column schema.
-	$model->save();
+	// the 'first_name' is not declared in the table schema, but will persist.
+	$model->first_name = "Christian";
+ 	$model->save();
 
+Also, this works too:
 
-Setup Instructions
-------------------
+	$model = Person::model()->findByPk(123);
+	echo "First Name is: ".$model->first_name;  // will echo "Christian"
+
+The extra attribute is present when retriving a attribute list:
+
+	$list = $model->attributes;   // this list will include 'first_name'
+
+##Setup Instructions
 
 1. git clone (or download) this extension into your protected/extensions dir.
 
