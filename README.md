@@ -12,7 +12,7 @@ In regular CActiveRecord based instances you have:
 $red = new Color;  
 $red->name = 'red';  
 $red->value='#f00'; 
-$red->insert();
+$red->insert(); // inserts a new record
 ```
 
 Now, using this specialized class you can deal with extra attributes
@@ -20,24 +20,36 @@ not declared in the table structure, instead, stored in a blob, as follows:
 
 ```
 // Color.php, defined as: class Color extends EActiveRecordEx { ... }
-// You can do the same operations as normal CActiveRecord, plus:
 $red = new Color;
 $red->name = 'red';
 $red->value = '#f00';
-// extended attributes, will be stored in a single blob
- $red->rgb_notation = 'rgb(255,0,0)';
- $red->label = 'This is a red color';
-$red->insert();
+
+	// extended attributes, will be stored in a single blob
+ 	$red->rgb_notation = 'rgb(255,0,0)';
+ 	$red->label = 'This is a red color';
+
+$red->insert(); // inserts a new record, the two extra fields are stored in
+				// one single database column named: ax_data (see also seetings)
 ```
 
-*Please note the 'rgb_notation' and 'label' attributes does not exists in
-the table schema. This fields are declared in a config file into your
-Yii Framework Application.*
+In this case the extra attributes: 'rgb_notation' and 'label' does not exists in
+the table schema, this two extra attributes can be used as any other attribute,
+the difference is the storage: will be persisted in the same blob field.
 
-The mentioned sample fields shown above are declared in a config file, and,
-are persisted in a single attribute previously defined in your scheme, in other
-words, you are required to create a new attribute (LONGBLOB) in your table
+You are required to create a new attribute (LONGBLOB) in your table
 scheme and pass it via settings, by default this field is called: 'ax_data'.
+
+
+Dealing with extra attributes
+-----------------------------
+
+There is no difference at modeling level with the extra declared attributes,
+you can use them in any CDataProvider based widget (CGridView, CListColumn,etc)
+also, the regular usage.
+
+	$model->first_name = "Christian";   // first_name does not belong to the
+										// column schema.
+	$model->save();
 
 
 Setup Instructions
