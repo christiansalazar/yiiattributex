@@ -10,7 +10,9 @@
 class EActiveRecordAx extends CActiveRecord {
 	private $_ax_settings;
 	private $_ax_record;
-
+	public function __isset($name){
+		return $this->ax_matchEntry($name) ? true : parent::__isset($name);
+	}
 	public function __get($name)
 	{
 		if($entry = $this->ax_matchEntry($name)){
