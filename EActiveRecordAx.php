@@ -217,8 +217,7 @@ class EActiveRecordAx extends CActiveRecord {
 			}else
 			return $attr_value; // asume $attr_value as default value
 		}elseif("set" == $mode){
-			if(isset($this->_ax_record[$attr_name]))
-				$this->_ax_record[$attr_name] = $attr_value;
+			$this->_ax_record[$attr_name] = $attr_value;
 		}	
 		return $return_value;
 	}
