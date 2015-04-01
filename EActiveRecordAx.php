@@ -125,6 +125,8 @@ class EActiveRecordAx extends CActiveRecord {
 	 * @return boolean
 	 */
 	public function beforeSave(){
+		if(null == $this->_ax_settings)
+			$this->_ax_settings = $this->ax_settings();
 		list($ax_data) = $this->_ax_settings;
 		$this->$ax_data = base64_encode(serialize($this->_ax_record));
 		return parent::beforeSave();
