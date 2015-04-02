@@ -45,6 +45,8 @@ class EActiveRecordAx extends CActiveRecord {
 		// about attributeNames: this method should be overrided here
 		// to allow attributeNames() to overload using this instance.
 		$values=array();
+		if(null == $this->_ax_settings)
+			$this->_ax_settings = $this->ax_settings();
 		list($ax_data) = $this->_ax_settings;
 		$values[$ax_data] = $this->$ax_data;
 		foreach($this->attributeNames() as $name)
