@@ -10,6 +10,17 @@
 class EActiveRecordAx extends CActiveRecord {
 	private $_ax_settings;
 	private $_ax_record;
+	protected function _ax_initialize(){
+		$this->_ax_settings = $this->ax_settings();
+		list($ax_data) = $this->_ax_settings;
+		$this->_ax_record = 
+			unserialize(base64_decode(parent::__get($ax_data)));
+		if(!is_array($this->_ax_record)){
+			$this->_ax_record = array();
+			foreach($this->ax_enumAttributes() as $_attr_name=>$attr_data)
+				$this->_ax_record[$_attr_name] = "";
+		}
+	}
 	public function __isset($name){
 		return $this->ax_matchEntry($name) ? true : parent::__isset($name);
 	}
@@ -127,8 +138,10 @@ class EActiveRecordAx extends CActiveRecord {
 	 * @return boolean
 	 */
 	public function beforeSave(){
-		if(null == $this->_ax_settings)
+		if(null == $this->_ax_settings){
 			$this->_ax_settings = $this->ax_settings();
+			$this->_ax_initialize(); // this solve the bug
+		}
 		list($ax_data) = $this->_ax_settings;
 		$this->$ax_data = base64_encode(serialize($this->_ax_record));
 		return parent::beforeSave();
